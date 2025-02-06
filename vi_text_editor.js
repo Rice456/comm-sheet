@@ -1,4 +1,5 @@
 const commands = {
+    "Title": "vi text editor",
     "Quit": {
         command: "$:q",
         description: "Exits the current session without saving any changes."

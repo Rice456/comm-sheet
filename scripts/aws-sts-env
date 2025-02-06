@@ -1,0 +1,46 @@
+#!/bin/bash
+
+echo '# Use with eval to set shell env:
+# $ eval "$(aws-sts-env ...)"'
+
+if [ "$1" = "mfa" ]; then
+  echo -n "Enter code: " >&2
+  read CODE
+  SESSION_CREDS=$(aws sts get-session-token --serial-number arn:aws:iam::$3:mfa/$2 --token-code $CODE)
+elif [ "$1" = "role" ]; then
+  SESSION_CREDS=$(aws sts assume-role --role-session-name $2 --role-arn arn:aws:iam::$3:role/$2)
+else
+  echo '
+1. Move the bash scirpt into env, remove extension
+	- ("echo $PATH" can see that path)
+	- (Example local env is at /usr/local/bin)
+	- (Check your current path : "pwd", sudo gives root privileges for one command only)
+
+	sudo mv ~/your/path/aws-sts-env.sh /usr/local/bin/aws-sts-env
+
+2. Make this script to be executable
+
+	chmod +x ~/usr/local/bin/aws-sts-env
+
+3. Close the terminal and open the new one
+
+To set an mfa session:
+$ aws-sts-env mfa <user> <account_id>
+Enter the code when prompted.
+
+To set a role session:
+$ aws-sts-env role <role-name> <account_id>
+
+You may need to clear your env before running this command:
+$ unset AWS_{ACCESS_KEY_ID,SECRET_ACCESS_KEY,SESSION_TOKEN}
+  ' >&2
+  exit 1
+fi
+
+[[ -z $SESSION_CREDS ]] && exit 1
+
+echo "
+export AWS_ACCESS_KEY_ID=$(echo $SESSION_CREDS | jq -r '.Credentials.AccessKeyId')
+export AWS_SECRET_ACCESS_KEY=$(echo $SESSION_CREDS | jq -r '.Credentials.SecretAccessKey')
+export AWS_SESSION_TOKEN=$(echo $SESSION_CREDS | jq -r '.Credentials.SessionToken')
+"
