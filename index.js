@@ -1,5 +1,5 @@
-import vi_text_editor from "./vi_text_editor.js";
-import aws_access_key_editor from "./aws.js";
+import vi_text_editor from "./commands/vi_text_editor.js";
+import aws_access_key_editor from "./commands/aws.js";
 
 const displayCommands = (comObj) => {
     for(const key in comObj){
