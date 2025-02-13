@@ -37,7 +37,7 @@ const commands = {
     },
     "S3": {
         command:
-            "$aws s3 ls s3://gummicube-data/SearchScrapeErrors/ --recursive | sort | tail -n 10" +
+            "$aws s3 ls s3://s3Path --recursive | sort | tail -n 10" +
             "$aws configure\n" +
             "$aws configure list\n" +
             "$aws iam list-access-keys\n" +
