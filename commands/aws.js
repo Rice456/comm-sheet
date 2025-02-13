@@ -22,6 +22,28 @@ const commands = {
             "$ export AWS_SECRET_ACCESS_KEY=<your-secret-access-key>\n" +
             "$ export AWS_SESSION_TOKEN=<your-session-token>",
         description: "Previous step will give you ID KEY TOKEN, and pass them to env"
+    },
+    "DynamoDB": {
+        command: "$aws dynamodb query \\\n" +
+            "    --table-name DetailResults-eks-stage \\\n" +
+            "    --expression-attribute-name '{ \"#myKey\": \"key\" }' \\\n" +
+            "    --key-condition-expression \"#myKey = :val\" \\\n" +
+                "    --expression-attribute-values '{ \":val\": { \"S\": \"xxxxxxx|title|apple_web|US\" } }' \\\n" +
+            "    --no-scan-index-forward\n" +
+            "    --max-items 5" +
+        "$aws dynamodb list-tables | jq -r '.TableNames[]' | grep KSR3_ | xargs -I % bash -c 'echo \"%, $(aws dynamodb describe-table --table-name % | jq '.Table.ItemCount')\"'" +
+        "$aws dynamodb scan --table-name tableName --query \"Items[].timestamp\" --output text | sort",
+        description: "Sample query"
+    },
+    "S3": {
+        command:
+            "$aws s3 ls s3://gummicube-data/SearchScrapeErrors/ --recursive | sort | tail -n 10" +
+            "$aws configure\n" +
+            "$aws configure list\n" +
+            "$aws iam list-access-keys\n" +
+            "$aws iam create-access-key" +
+            "aws s3 ls s3://s3Path | grep PRE | wc -l",
+        description:"Update access key: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html?icmpid=docs_iam_console#Using_CreateAccessKey"
     }
 }
 

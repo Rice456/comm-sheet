@@ -2,3 +2,4 @@
 .env
 new command sheet.txt
 node_modules
+personalCMD/*
